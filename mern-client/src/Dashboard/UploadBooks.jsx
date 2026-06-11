@@ -37,7 +37,7 @@ const UploadBooks = () => {
     }
     console.log(bookObj)
     //send data to DB
-    fetch("http://localhost:3001/upload-book",{
+    fetch("https://mern-book-store-red.vercel.app/upload-book",{
       method:"POST",
       headers:{
         "Content-Type": "application/json",

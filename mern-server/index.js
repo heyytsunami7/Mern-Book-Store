@@ -1,17 +1,17 @@
-require('dotenv').config(); // 👈 Added this to load your .env file
+require('dotenv').config(); 
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
 const cors = require("cors");
 
-// 👇 THIS IS THE UPDATED CORS THINGY 👇
+
 app.use(cors(
     {
-        origin: ["http://localhost:5173", "YOUR_VERCEL_FRONTEND_URL_HERE"],
+        origin: ["http://localhost:5173", "https://mern-book-store-vszi.vercel.app"],
         credentials: true
     }
 ));
-// 👆 -------------------------------- 👆
+
 
 app.use(express.json());
 
@@ -22,7 +22,7 @@ app.get("/",(req,res)=>{
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
-// 👇 THIS SECURES YOUR DATABASE LINK 👇
+
 const uri = process.env.MONGODB_URI; 
 
 const client = new MongoClient(uri, {
