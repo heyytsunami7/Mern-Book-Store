@@ -42,7 +42,7 @@ const EditBooks = () => {
     }
     //console.log(bookObj)
     //Update Book Data
-    fetch(`http://localhost:3001/book/${id}`,{
+    fetch(`https://mern-book-store-red.vercel.app/book/${id}`,{
       method: "PATCH",
       headers:{
         "Content-Type":"application/json"
