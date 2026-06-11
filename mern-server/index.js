@@ -20,7 +20,7 @@ app.get("/",(req,res)=>{
 //mongo config
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = "mongodb+srv://mern-book-store:1234567890@cluster0.zyl1n6y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "";
 
 const client = new MongoClient(uri, {
   serverApi: {
