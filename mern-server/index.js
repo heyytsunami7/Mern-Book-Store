@@ -1,3 +1,4 @@
+require('dotenv').config(); // 👈 Added this to load your .env file
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
@@ -20,7 +21,9 @@ app.get("/",(req,res)=>{
 //mongo config
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const uri = "";
+
+// 👇 THIS SECURES YOUR DATABASE LINK 👇
+const uri = process.env.MONGODB_URI; 
 
 const client = new MongoClient(uri, {
   serverApi: {

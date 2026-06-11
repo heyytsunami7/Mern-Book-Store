@@ -35,5 +35,3 @@ yarn-error.log*
 # OS metadata
 .DS_Store
 Thumbs.db
-
-mongodb+srv://mern-book-store:1234567890@cluster0.zyl1n6y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
