@@ -1,11 +1,13 @@
 import BookCard from '../components/BookCard';
 import React, { useEffect, useState } from 'react'
 
+const API = import.meta.env.VITE_API_URL;
+
 const OtherBooks = () => {
     const [ books, setBooks ] = useState([]);
 
     useEffect(()=>{
-        fetch("https://mern-book-store-red.vercel.app/all-books").then(res => res.json()).then(data => setBooks(data.slice(6,12)));
+        fetch(`${API}/all-books`).then(res => res.json()).then(data => setBooks((data.books || []).slice(6,12)));
     },[])
   return (
     <div>

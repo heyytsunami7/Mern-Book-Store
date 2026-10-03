@@ -1,4 +1,4 @@
-import React, { useState,createContext, Children, useEffect } from 'react'
+import React, { useState,createContext, useEffect } from 'react'
 import app from "../firebase/firebase.config"
 import {onAuthStateChanged ,createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signOut } from "firebase/auth"
 
@@ -21,12 +21,19 @@ const AuthProvider = ({children}) => {
     return signInWithPopup(auth, googleProvider);
   }  
   const login = (email,password)=> {
-    setLoading
+    setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   }
   const logOut = () => {
     return signOut(auth)
   }
+
+  // Helper: get current user's ID token for API calls
+  const getToken = async () => {
+    if (!auth.currentUser) return null;
+    return auth.currentUser.getIdToken();
+  };
+
    useEffect(()=>{
     const unsubscribe = onAuthStateChanged(auth,currentUser=>{
       console.log(currentUser);
@@ -43,8 +50,8 @@ const AuthProvider = ({children}) => {
      loginwithGoogle,
      loading,
      login,
-     logOut
-    
+     logOut,
+     getToken
   }
   return (
     <AuthContext.Provider value={authInfo}>

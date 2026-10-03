@@ -1,11 +1,15 @@
 import React from 'react'
 import {useLoaderData,useParams} from "react-router-dom";
 import { Button,  Label, TextInput, Textarea } from "flowbite-react";
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from "../Context/AuthProvider";
+
+const API = import.meta.env.VITE_API_URL;
 
 const EditBooks = () => {
   const {id} = useParams();
   const {bookTitle,authorName,imageURL,category,bookDescription,bookPDFUrl} = useLoaderData();
+  const { getToken } = useContext(AuthContext);
 
   const bookCategories = [
     "Fiction",
@@ -42,18 +46,19 @@ const EditBooks = () => {
     }
     //console.log(bookObj)
     //Update Book Data
-    fetch(`https://mern-book-store-red.vercel.app/book/${id}`,{
-      method: "PATCH",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body: JSON.stringify(UpdateBookObj)
-    }).then(res=> res.json()).then(data =>{
-      //console.log(data)
-      alert("Book Updated Successfully !!")
-      
+    getToken().then(token => {
+      fetch(`${API}/book/${id}`,{
+        method: "PATCH",
+        headers:{
+          "Content-Type":"application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(UpdateBookObj)
+      }).then(res=> res.json()).then(data =>{
+        //console.log(data)
+        alert("Book Updated Successfully !!")
+      })
     })
-    
   }
 
   

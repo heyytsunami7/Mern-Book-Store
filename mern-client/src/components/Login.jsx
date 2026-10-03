@@ -64,6 +64,15 @@ const Login = () => {
           <div className='flex w-full items-center flex-col mt-5 gap-3'>
             <button onClick={handleRegister}><img src={google} alt="" className='w-12 h-12 inline-block' />Login with Google</button>
           </div>
+          <div className='mt-4 text-center'>
+            <button
+              onClick={() => navigate("/")}
+              className='text-gray-500 underline hover:text-gray-800'
+            >
+              Continue as Guest
+            </button>
+          </div>
+
         </div>
       </div>
     </div>

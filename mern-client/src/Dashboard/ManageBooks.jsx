@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Table, TableBody } from "flowbite-react";
+import React, { useContext, useEffect, useState } from "react";
+import { Table } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../Context/AuthProvider";
+
+const API = import.meta.env.VITE_API_URL;
+
 const ManageBooks = () => {
   const [ allBooks,setAllBooks ] = useState([]);
+  const { getToken } = useContext(AuthContext);
+
   useEffect(()=>{
-    fetch("https://mern-book-store-red.vercel.app/all-books").then(res=>res.json()).then(data=> setAllBooks(data));
+    fetch(`${API}/all-books`).then(res=>res.json()).then(data=> setAllBooks(data.books || []));
   },[])
 
   //Delete a book
-  const handleDelete = (id) =>{
-    //console.log(id)
-    fetch(`https://mern-book-store-red.vercel.app/book/${id}`,{
+  const handleDelete = async (id) => {
+    const token = await getToken();
+    fetch(`${API}/book/${id}`,{
       method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
     }).then(res => res.json()).then(data=>{
       alert("Book is Deleted successfully")
-      //setAllBooks(data);
+      // Remove the deleted book from the list immediately
+      setAllBooks(prev => prev.filter(b => b._id !== id));
     })
   }
   return (
@@ -43,7 +51,7 @@ const ManageBooks = () => {
             </Table.Cell>
             <Table.Cell>{book.authorName}</Table.Cell>
             <Table.Cell>{book.category}</Table.Cell>
-            <Table.Cell>₹800</Table.Cell>
+            <Table.Cell>{book.price ? `₹${book.price}` : "N/A"}</Table.Cell>
             <Table.Cell>
               <Link className="font-medium text-cyan-600 hover:underline dark:text-cyan-500 mr-5"
                to={`/admin/dashboard/edit-books/${book._id}`}

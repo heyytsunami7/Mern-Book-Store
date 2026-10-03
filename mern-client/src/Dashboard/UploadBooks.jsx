@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button,  Label, TextInput, Textarea } from "flowbite-react";
+import { AuthContext } from "../Context/AuthProvider";
+
+const API = import.meta.env.VITE_API_URL;
 
 const UploadBooks = () => {
+  const { getToken } = useContext(AuthContext);
   const bookCategories = [
     "Fiction",
     "Non-Fiction",
@@ -37,16 +41,19 @@ const UploadBooks = () => {
     }
     console.log(bookObj)
     //send data to DB
-    fetch("https://mern-book-store-red.vercel.app/upload-book",{
-      method:"POST",
-      headers:{
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bookObj)
-    }).then(res=> res.json()).then(data =>{
-      //console.log(data)
-      alert("Book uploaded successfully !!")
-      form.reset();
+    getToken().then(token => {
+      fetch(`${API}/upload-book`,{
+        method:"POST",
+        headers:{
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bookObj)
+      }).then(res=> res.json()).then(data =>{
+        //console.log(data)
+        alert("Book uploaded successfully !!")
+        form.reset();
+      })
     })
   }
 

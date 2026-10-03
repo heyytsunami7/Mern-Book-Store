@@ -3,10 +3,8 @@ node_modules/
 
 # Environment variables (CRUCIAL for your MongoDB password!)
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 
 # Vite / React Build output
 dist/

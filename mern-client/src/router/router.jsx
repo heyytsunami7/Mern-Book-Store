@@ -14,6 +14,9 @@ import Signup from "../components/Signup";
 import Login from "../components/Login";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import Logout from "../components/Logout";
+
+const API = import.meta.env.VITE_API_URL;
+
 const router = createBrowserRouter([
     {
       path: "/",
@@ -37,18 +40,18 @@ const router = createBrowserRouter([
         },
         {
           path:"/book/:id",
-          element:<SingleBook/>,
-          loader:({params}) => fetch(`https://mern-book-store-red.vercel.app/book/${params.id}`)
+          element:<PrivateRoute><SingleBook/></PrivateRoute>,
+          loader:({params}) => fetch(`${API}/book/${params.id}`)
         }
       ]
     },
     {
       path: "/admin/dashboard",
-      element:<DashboardLayout/>,
+      element:<PrivateRoute><DashboardLayout/></PrivateRoute>,
       children:[
         {
           path: "/admin/dashboard",
-          element: <PrivateRoute><Dashboard/></PrivateRoute>
+          element: <Dashboard/>
         },
         {
           path: "/admin/dashboard/upload",
@@ -61,7 +64,7 @@ const router = createBrowserRouter([
         {
           path: "/admin/dashboard/edit-books/:id",
           element: <EditBooks/>,
-          loader:({params}) => fetch(`https://mern-book-store-red.vercel.app/book/${params.id}`)
+          loader:({params}) => fetch(`${API}/book/${params.id}`)
         }
       ]
     },
