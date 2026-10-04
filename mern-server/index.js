@@ -42,11 +42,21 @@ async function verifyToken(req, res, next) {
   }
 }
 
-// Optional: restrict to specific admin emails
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(s => s.trim()).filter(Boolean);
+// Restrict to specific admin emails (REQUIRED – empty list = no admin access)
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+
+if (ADMIN_EMAILS.length === 0) {
+  console.warn("⚠️  ADMIN_EMAILS is empty – all admin routes will return 403. Set it in .env.");
+}
 
 function requireAdmin(req, res, next) {
-  if (ADMIN_EMAILS.length > 0 && !ADMIN_EMAILS.includes(req.user.email)) {
+  if (ADMIN_EMAILS.length === 0) {
+    return res.status(403).json({ error: "Forbidden – admin access is not configured" });
+  }
+  if (!req.user.email_verified) {
+    return res.status(403).json({ error: "Forbidden – email not verified" });
+  }
+  if (!ADMIN_EMAILS.includes((req.user.email || "").toLowerCase())) {
     return res.status(403).json({ error: "Forbidden – not an admin" });
   }
   next();
@@ -80,7 +90,8 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    const bookCollections = client.db("BookInventory").collection("books");
+    const dbName = process.env.DB_NAME || "BookInventory";
+    const bookCollections = client.db(dbName).collection("books");
     
     // --- Insert a book (auth + admin required) ---
     app.post("/upload-book", verifyToken, requireAdmin, async(req,res)=>{

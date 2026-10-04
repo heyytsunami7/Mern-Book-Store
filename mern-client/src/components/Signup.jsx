@@ -4,7 +4,7 @@ import { AuthContext } from '../Context/AuthProvider';
 import google from '../assets/google-logo.svg';
 
 const Signup = () => {
-  const { createUser, loginwithGoogle } = useContext(AuthContext);
+  const { createUser, loginWithGoogle } = useContext(AuthContext);
   const [error, setError] = useState('');
 
   const location = useLocation();
@@ -32,7 +32,7 @@ const Signup = () => {
 
   const handleRegister = async () => {
     try {
-      const result = await loginwithGoogle();
+      const result = await loginWithGoogle();
       const user = result.user;
       alert('Sign Up Successfully!!');
       navigate(from, { replace: true });

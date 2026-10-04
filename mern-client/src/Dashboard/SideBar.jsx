@@ -7,13 +7,11 @@ import {
   HiOutlineCloudUpload,
   HiShoppingBag,
   HiTable,
-  HiUser,
   HiViewBoards,
 } from "react-icons/hi";
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthProvider";
 import { Link } from "react-router-dom"; // Import Link component
-import userImg from "../assets/profile.jpg";
 
 const SideBar = () => {
   const { user } = useContext(AuthContext);

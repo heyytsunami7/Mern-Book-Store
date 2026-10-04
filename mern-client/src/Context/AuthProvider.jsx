@@ -12,17 +12,16 @@ const AuthProvider = ({children}) => {
 
   const createUser = (email,password)=>{
    setLoading(true);
-   return createUserWithEmailAndPassword(auth,email,password)
-
+   return createUserWithEmailAndPassword(auth,email,password).finally(() => setLoading(false));
   }
   
-  const loginwithGoogle = () =>{
+  const loginWithGoogle = () =>{
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
+    return signInWithPopup(auth, googleProvider).finally(() => setLoading(false));
   }  
   const login = (email,password)=> {
     setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(auth, email, password).finally(() => setLoading(false));
   }
   const logOut = () => {
     return signOut(auth)
@@ -36,7 +35,6 @@ const AuthProvider = ({children}) => {
 
    useEffect(()=>{
     const unsubscribe = onAuthStateChanged(auth,currentUser=>{
-      console.log(currentUser);
       setUser(currentUser);
       setLoading(false);
     });
@@ -47,7 +45,7 @@ const AuthProvider = ({children}) => {
   const authInfo = {
      user,
      createUser,
-     loginwithGoogle,
+     loginWithGoogle,
      loading,
      login,
      logOut,
