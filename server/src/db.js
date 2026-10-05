@@ -1,75 +1,42 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const config = require("./config");
-
-// Module-level variables to cache the MongoClient and its connection promise
-// This prevents connection exhaustion across serverless function invocations (e.g., Vercel)
-let client = null;
-let clientPromise = null;
 
 /**
- * Connect to MongoDB and cache the connection promise.
- * Subsequent calls return the existing promise.
- * @param {string} [uri=config.MONGODB_URI]
- * @param {object} [options={}]
- * @returns {Promise<MongoClient>}
+ * Create the indexes the app needs. Safe to run repeatedly.
+ * Phase 1 only needs the users index; Phase 2 adds the rest.
  */
-function connect(uri = config.MONGODB_URI, options = {}) {
-  if (!clientPromise) {
-    const mongoOptions = {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      },
-      ...options,
-    };
-
-    client = new MongoClient(uri, mongoOptions);
-    clientPromise = client.connect().catch((err) => {
-      // Clear cached promise on failure so subsequent requests can retry
-      client = null;
-      clientPromise = null;
-      throw err;
-    });
-  }
-
-  return clientPromise;
+async function ensureIndexes(db) {
+  await db.collection("users").createIndex({ firebaseUid: 1 }, { unique: true });
 }
 
 /**
- * Returns the MongoDB Database instance using the cached connection.
- * @param {string} [dbName=config.DB_NAME]
- * @returns {Promise<import("mongodb").Db>}
+ * Returns a getDb() function that connects once and reuses the same connection.
+ * The promise is cached in this closure, so on Vercel every request handled by the
+ * same warm instance shares one connection. A failed connect is not cached.
  */
-async function getDb(dbName = config.DB_NAME) {
-  const connectedClient = await connect();
-  return connectedClient.db(dbName);
+function createDbGetter({ uri, dbName }) {
+  let dbPromise = null;
+
+  return function getDb() {
+    if (!dbPromise) {
+      // Stable API "strict" mode is intentionally off: it can reject operations
+      // we use later (for example text search). Turn it on only if tests pass with it.
+      const client = new MongoClient(uri, {
+        serverApi: { version: ServerApiVersion.v1, deprecationErrors: true },
+      });
+      dbPromise = client
+        .connect()
+        .then(async (connected) => {
+          const db = connected.db(dbName);
+          await ensureIndexes(db);
+          return db;
+        })
+        .catch((err) => {
+          dbPromise = null;
+          throw err;
+        });
+    }
+    return dbPromise;
+  };
 }
 
-/**
- * Ensures required database indexes exist on startup or migration.
- * @returns {Promise<void>}
- */
-async function ensureIndexes() {
-  const db = await getDb();
-  await db.collection("books").createIndex({ category: 1 });
-}
-
-/**
- * Gracefully close the MongoDB client and reset connection state.
- * @returns {Promise<void>}
- */
-async function closeDb() {
-  if (client) {
-    await client.close();
-    client = null;
-    clientPromise = null;
-  }
-}
-
-module.exports = {
-  connect,
-  getDb,
-  ensureIndexes,
-  closeDb,
-};
+module.exports = { createDbGetter, ensureIndexes };
