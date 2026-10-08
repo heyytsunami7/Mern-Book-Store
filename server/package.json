@@ -9,7 +9,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "dev:legacy": "nodemon legacy/index.legacy.js"
   },
   "keywords": [],
   "author": "",
