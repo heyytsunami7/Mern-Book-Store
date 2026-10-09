@@ -11,7 +11,10 @@ function normalizeError(err) {
   if (err && err.type === "entity.too.large") {
     return new AppError("Request body is too large", 413, ErrorCodes.BAD_REQUEST);
   }
-  if (err && (err.type === "entity.parse.failed" || (err instanceof SyntaxError && err.status === 400))) {
+  if (
+    err &&
+    (err.type === "entity.parse.failed" || (err instanceof SyntaxError && err.status === 400))
+  ) {
     return AppError.badRequest("Malformed JSON in request body");
   }
   // MongoDB duplicate key
@@ -31,7 +34,9 @@ function errorHandler(err, req, res, _next) {
   if (!appError) {
     if (req.log) req.log.error({ err }, "Unhandled error");
     else console.error(err);
-    appError = AppError.internal(isProd ? "Internal server error" : err?.message || "Internal server error");
+    appError = AppError.internal(
+      isProd ? "Internal server error" : err?.message || "Internal server error",
+    );
   }
 
   const body = { error: { code: appError.code, message: appError.message } };

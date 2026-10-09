@@ -25,6 +25,8 @@ describe("parseConfig", () => {
 
   it("treats a missing or empty ADMIN_EMAILS as an empty list", () => {
     expect(parseConfig({ MONGODB_URI: "x", DB_NAME: "d" }).ADMIN_EMAILS).toEqual([]);
-    expect(parseConfig({ MONGODB_URI: "x", DB_NAME: "d", ADMIN_EMAILS: "" }).ADMIN_EMAILS).toEqual([]);
+    expect(parseConfig({ MONGODB_URI: "x", DB_NAME: "d", ADMIN_EMAILS: "" }).ADMIN_EMAILS).toEqual(
+      [],
+    );
   });
 });
