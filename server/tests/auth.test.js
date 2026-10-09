@@ -60,3 +60,29 @@ describe("verifyToken", () => {
     expect(res.body.isAdmin).toBe(false);
   });
 });
+describe("requireAdmin", () => {
+  it("returns 403 for everyone when no admin emails are configured", async () => {
+    const app = buildApp([]);
+    const res = await request(app).get("/admin").set("Authorization", "Bearer boss");
+    expect(res.status).toBe(403);
+    expect(res.body.error.message).toMatch(/not configured/i);
+  });
+
+  it("allows a verified admin email, ignoring case", async () => {
+    const app = buildApp(["BOSS@Example.com"]);
+    const res = await request(app).get("/admin").set("Authorization", "Bearer boss");
+    expect(res.status).toBe(200);
+  });
+
+  it("rejects an admin email that is not verified", async () => {
+    const app = buildApp(["boss@example.com"]);
+    const res = await request(app).get("/admin").set("Authorization", "Bearer bossUnverified");
+    expect(res.status).toBe(403);
+  });
+
+  it("rejects a verified user who is not on the list", async () => {
+    const app = buildApp(["boss@example.com"]);
+    const res = await request(app).get("/admin").set("Authorization", "Bearer alice");
+    expect(res.status).toBe(403);
+  });
+});
