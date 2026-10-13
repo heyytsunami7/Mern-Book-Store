@@ -1,9 +1,12 @@
 import { createRequire } from "node:module";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { MongoClient } from "mongodb";
 
 // The server source is CommonJS, so load it with require.
 const require = createRequire(import.meta.url);
 const { createApp } = require("../src/app");
 const { parseConfig } = require("../src/config");
+const { ensureIndexes } = require("../src/db");
 
 // Fake Firebase tokens: the token string is just a key into this table.
 export const TOKENS = {
@@ -37,4 +40,18 @@ export function makeApp({ db = null, adminEmails = "boss@example.com" } = {}) {
     return user;
   };
   return createApp({ config, getDb, verifyIdToken });
+}
+
+export async function startTestDb() {
+  const mongod = await MongoMemoryServer.create();
+  const client = await MongoClient.connect(mongod.getUri());
+  const db = client.db("bookstore_test");
+  await ensureIndexes(db);
+  return {
+    db,
+    async stop() {
+      await client.close();
+      await mongod.stop();
+    },
+  };
 }
