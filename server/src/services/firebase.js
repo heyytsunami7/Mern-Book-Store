@@ -1,11 +1,18 @@
-const admin = require("firebase-admin");
+const {
+  initializeApp,
+  getApps,
+  getApp,
+  cert,
+  applicationDefault,
+} = require("firebase-admin/app");
+const { getAuth } = require("firebase-admin/auth");
 
 /**
  * Returns an async function (idToken) => decodedToken.
  * Tests never call this; they inject their own fake verifier into createApp.
  */
 function createFirebaseVerifier(serviceAccountRaw) {
-  if (!admin.apps.length) {
+  if (!getApps().length) {
     const raw = (serviceAccountRaw || "").trim();
     if (raw) {
       let serviceAccount;
@@ -16,15 +23,15 @@ function createFirebaseVerifier(serviceAccountRaw) {
           cause: err,
         });
       }
-      admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+      initializeApp({ credential: cert(serviceAccount) });
     } else {
       console.warn(
         "FIREBASE_SERVICE_ACCOUNT_KEY is not set: every authenticated request will be rejected.",
       );
-      admin.initializeApp();
+      initializeApp();
     }
   }
-  return (idToken) => admin.auth().verifyIdToken(idToken);
+  return (idToken) => getAuth(getApp()).verifyIdToken(idToken);
 }
 
 module.exports = { createFirebaseVerifier };
