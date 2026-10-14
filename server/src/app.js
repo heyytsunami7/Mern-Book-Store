@@ -7,12 +7,13 @@ const pinoHttp = require("pino-http");
 
 const { createLimiters } = require("./middleware/rateLimit");
 const { notFoundHandler, errorHandler } = require("./middleware/error");
+const healthRouter = require("./routes/health");
 
 /**
  * Builds the Express app from injected dependencies. It never connects to a database
  * or opens a port, so tests can import it freely.
  */
-function createApp({ config, logger }) {
+function createApp({ config, getDb, logger }) {
   const app = express();
 
   app.set("config", config);
@@ -32,6 +33,7 @@ function createApp({ config, logger }) {
   app.use(limiters.global);
 
   app.get("/", (req, res) => res.json({ name: "mern-book-store-api", ok: true }));
+  app.use(healthRouter({ getDb }));
   // Later commits mount more routers here.
 
   app.use(notFoundHandler);
