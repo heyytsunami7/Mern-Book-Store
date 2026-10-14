@@ -5,15 +5,17 @@ const compression = require("compression");
 const pino = require("pino");
 const pinoHttp = require("pino-http");
 
+const { createAuth } = require("./middleware/auth");
 const { createLimiters } = require("./middleware/rateLimit");
 const { notFoundHandler, errorHandler } = require("./middleware/error");
 const healthRouter = require("./routes/health");
+const meRouter = require("./routes/me");
 
 /**
  * Builds the Express app from injected dependencies. It never connects to a database
  * or opens a port, so tests can import it freely.
  */
-function createApp({ config, getDb, logger }) {
+function createApp({ config, getDb, verifyIdToken, logger }) {
   const app = express();
 
   app.set("config", config);
@@ -24,6 +26,7 @@ function createApp({ config, getDb, logger }) {
 
   const log = logger || pino({ level: config.NODE_ENV === "test" ? "silent" : "info" });
   const limiters = createLimiters(config);
+  const auth = createAuth({ verifyIdToken, adminEmails: config.ADMIN_EMAILS });
 
   app.use(pinoHttp({ logger: log }));
   app.use(helmet());
@@ -34,6 +37,7 @@ function createApp({ config, getDb, logger }) {
 
   app.get("/", (req, res) => res.json({ name: "mern-book-store-api", ok: true }));
   app.use(healthRouter({ getDb }));
+  app.use(meRouter({ getDb, auth }));
   // Later commits mount more routers here.
 
   app.use(notFoundHandler);
