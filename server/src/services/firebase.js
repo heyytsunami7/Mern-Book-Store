@@ -1,10 +1,4 @@
-const {
-  initializeApp,
-  getApps,
-  getApp,
-  cert,
-  applicationDefault,
-} = require("firebase-admin/app");
+const { initializeApp, getApps, getApp, cert } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 
 /**
