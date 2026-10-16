@@ -1,11 +1,58 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
 /**
+ * Every index the app needs, by collection. Adding an index later means adding a line here.
+ * The users index has no explicit name on purpose: it keeps the default name (firebaseUid_1)
+ * that earlier versions of this file created, so existing databases do not conflict.
+ */
+const INDEXES = {
+  users: [{ key: { firebaseUid: 1 }, unique: true }],
+  books: [
+    {
+      key: { isbn: 1 },
+      name: "isbn_unique",
+      unique: true,
+      // Only books that have an ISBN take part, so hand-added books without one never collide.
+      partialFilterExpression: { isbn: { $type: "string" } },
+    },
+    {
+      key: { "source.provider": 1, "source.externalId": 1 },
+      name: "source_unique",
+      unique: true,
+      // Makes re-running the seed safe. Manual books have no externalId and are not indexed.
+      partialFilterExpression: { "source.externalId": { $type: "string" } },
+    },
+    {
+      key: { title: "text", authors: "text", description: "text" },
+      name: "books_text",
+      weights: { title: 10, authors: 5, description: 1 },
+    },
+    { key: { category: 1, pricePaise: 1 }, name: "category_price" },
+    { key: { isActive: 1, createdAt: -1 }, name: "active_created" },
+    { key: { isFeatured: 1 }, name: "featured" },
+  ],
+  carts: [{ key: { userUid: 1 }, name: "userUid_unique", unique: true }],
+  orders: [
+    { key: { orderNumber: 1 }, name: "orderNumber_unique", unique: true },
+    { key: { userUid: 1, createdAt: -1 }, name: "user_created" },
+    { key: { status: 1, expiresAt: 1 }, name: "status_expires" },
+    { key: { "items.bookId": 1 }, name: "items_bookId" },
+    {
+      key: { "payment.razorpayOrderId": 1 },
+      name: "razorpayOrderId_unique",
+      unique: true,
+      sparse: true, // orders without a Razorpay order id are allowed to repeat
+    },
+  ],
+};
+
+/**
  * Create the indexes the app needs. Safe to run repeatedly.
- * Phase 1 only needs the users index; Phase 2 adds the rest.
  */
 async function ensureIndexes(db) {
-  await db.collection("users").createIndex({ firebaseUid: 1 }, { unique: true });
+  for (const [collection, specs] of Object.entries(INDEXES)) {
+    await db.collection(collection).createIndexes(specs);
+  }
 }
 
 /**
@@ -39,4 +86,4 @@ function createDbGetter({ uri, dbName }) {
   };
 }
 
-module.exports = { createDbGetter, ensureIndexes };
+module.exports = { createDbGetter, ensureIndexes, INDEXES };
