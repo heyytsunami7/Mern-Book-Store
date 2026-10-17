@@ -10,7 +10,8 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "dev:legacy": "nodemon legacy/index.legacy.js"
+    "dev:legacy": "nodemon legacy/index.legacy.js",
+    "catalog:fetch:openlibrary": "node scripts/fetch-openlibrary.js"
   },
   "keywords": [],
   "author": "",

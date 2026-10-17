@@ -1,0 +1,91 @@
+{
+  "source": "openlibrary",
+  "fetchedAt": "2026-10-17T17:34:14.598Z",
+  "categories": {
+    "Mystery": [
+      {
+        "externalId": "/works/OL34224558W",
+        "title": "Never Lie",
+        "authors": [
+          "Freida McFadden"
+        ],
+        "firstPublishYear": 2022,
+        "isbn": "9798352831533",
+        "coverId": 13198561,
+        "coverUrl": "https://covers.openlibrary.org/b/id/13198561-L.jpg",
+        "pageCount": 328,
+        "subjects": [
+          "Thriller",
+          "Mystery",
+          "Mystery Thriller",
+          "Fiction",
+          "Suspense",
+          "Crime",
+          "Psychological Thriller",
+          "Contemporary"
+        ],
+        "description": "Newlyweds Tricia and Ethan are searching for the house of their dreams.\n\nBut when they visit the remote manor that once belonged to Dr. Adrienne Hale, a renowned psychiatrist who vanished without a trace four years earlier, a violent winter storm traps them at the estate… with no chance of escape until the blizzard comes to an end.\n\nIn search of a book to keep her entertained until the snow abates, Tricia happens upon a secret room. One that contains audio transcripts from every single patient Dr. Hale has ever interviewed. As Tricia listens to the cassette tapes, she learns about the terrifying chain of events leading up to Dr. Hale’s mysterious disappearance.\n\nTricia plays the tapes one by one, late into the night. With each one, another shocking piece of the puzzle falls into place, and Dr. Adrienne Hale’s web of lies slowly unravels.\n\nAnd then Tricia reaches the final cassette.\n\nThe one that reveals the entire horrifying truth."
+      },
+      {
+        "externalId": "/works/OL472165W",
+        "title": "Peril at End House",
+        "authors": [
+          "Agatha Christie"
+        ],
+        "firstPublishYear": 1932,
+        "isbn": "9780007119301",
+        "coverId": 12996556,
+        "coverUrl": "https://covers.openlibrary.org/b/id/12996556-L.jpg",
+        "pageCount": 223,
+        "subjects": [
+          "English Detective and mystery stories",
+          "Fiction",
+          "Mystery",
+          "Private investigators",
+          "Detective and mystery stories",
+          "English literature",
+          "English language",
+          "Fiction, mystery & detective, general",
+          "Private investigators, fiction",
+          "Detectives",
+          "Crime",
+          "Classics",
+          "Mystery Thriller",
+          "Detective",
+          "Murder Mystery",
+          "Thriller"
+        ],
+        "description": null
+      },
+      {
+        "externalId": "/works/OL472549W",
+        "title": "The Man in the Brown Suit",
+        "authors": [
+          "Agatha Christie"
+        ],
+        "firstPublishYear": 1924,
+        "isbn": "9781662291784",
+        "coverId": 11153508,
+        "coverUrl": "https://covers.openlibrary.org/b/id/11153508-L.jpg",
+        "pageCount": 225,
+        "subjects": [
+          "Fiction",
+          "Mystery",
+          "English literature",
+          "Fiction, mystery & detective, general",
+          "French fiction",
+          "English Detective and mystery stories",
+          "London (england), fiction",
+          "South Africa -- Fiction",
+          "Detective and mystery stories",
+          "London (England) -- Fiction",
+          "Murder -- Investigation -- Fiction",
+          "Women adventurers",
+          "Fiction, thrillers, general",
+          "Fiction, general"
+        ],
+        "description": null
+      }
+    ]
+  }
+}
